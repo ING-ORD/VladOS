@@ -50,6 +50,7 @@ while(1):
                     req = req_adds
                     break
                 if(req_adds == "exit"):
+                    valid = True
                     break
     if(req == "del"):
         while(1):
@@ -70,6 +71,7 @@ while(1):
                     req = req_del
                     break
                 if(req_del == "exit"):
+                    valid = True
                     break
     if (req == "change"):
         while(1):
@@ -93,6 +95,7 @@ while(1):
                     req = req_change
                     break
                 if(req_change == "exit"):
+                    valid = True
                     break
     if (req == "look"):
         table_student(bd_student)
