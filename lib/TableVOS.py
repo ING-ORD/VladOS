@@ -1,3 +1,6 @@
+import json
+import os.path
+
 def add (bd = None,id = None):
     answer = []
     if(bd != None):
@@ -54,7 +57,9 @@ def what_change(bd, what):
     return answer 
 
 def table_student(bd):
-
+    if (len(bd)==0):
+        print(">>> База пустая <<<")
+        return
     max_len = [0,7,3,8,6,3]
 
     for ell in bd:
@@ -84,3 +89,24 @@ def table_student(bd):
             if (i==5):
                 print()
         count += 1
+
+def save(bd = [[]]):
+    nameJsonFile = "save.json"
+    jsonStr = json.dumps(bd, ensure_ascii=False)
+    jsonFile = open(nameJsonFile,"w")
+    jsonFile.write(jsonStr)
+    jsonFile.close()
+
+def load():
+    nameJsonFile = "save.json"
+    if(not os.path.exists(nameJsonFile)):
+        zeroFile = open(nameJsonFile,"w")
+        zeroFile.write("[]")
+        zeroFile.close()
+        return []
+    else:
+        jsonFile = open(nameJsonFile,"r")
+        for link in jsonFile:
+            answer = json.loads(link)
+        jsonFile.close()
+        return answer
