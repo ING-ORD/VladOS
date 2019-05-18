@@ -5,9 +5,9 @@ from lib.TableVOS import *
    
 
 
-bd_student = load()
+# bd_student = load()
 
-# add(bd,id) - Добавляет/bd - база/id - место вставки элемента,все оставльные сдвигаются, по умолчанию в конец
+# add(bd,bd_id,id) - Добавляет/bd - база/bd_id - ид базы которая используется(поумалочанию = 1)/id - место вставки элемента,все оставльные сдвигаются, по умолчанию в конец
 # delete(bd,id) - Удаление/bd - база/id - удаляемый элемент, по умолчанию, последний
 # change(bd,what,id) - Изменение элементов/bd - база/what - что изменять,{F -Фамилия,I -Имя,O -Отчество,G -Группа,A -Возвраст}, по умолчанию перезаписывает полностью/id - изменяемый элемент, по умолчанию последний
 # table_student(bd) - Выводит содержимое на экран в таблице
@@ -17,7 +17,11 @@ print(visionOS,"- все права защищены ©")
 print("-"*25)
 valid = True
 # print(bd_student + "1")
-
+bd_id = int(input("""Какую бызу использовать?:
+    1)Student
+    2)Teacher
+    : """))
+bd = load(bd_id)
 
 while(1):
     if(valid):
@@ -40,11 +44,11 @@ while(1):
                     print(">> exit - выход из режима")
                 if (req_adds.split()[0] == "add" and req_adds.split()[1] =="-l"):
                     if(len(req_adds.split())==3):
-                        bd_student = add(bd_student,req_adds.split()[2])
+                        bd = add(bd,bd_id,req_adds.split()[2])
                     else:
-                        bd_student = add(bd_student)
+                        bd = add(bd,bd_id)
                 if (req_adds == "look"):
-                    table_student(bd_student)
+                    table_student(bd)
                 if (req_adds =="del" or req_adds == "change"):
                     valid = False
                     req = req_adds
@@ -63,9 +67,12 @@ while(1):
                     print(">> look - просмотр содержимого списка")
                     print(">> exit - выход из режима")
                 if (req_del.split()[0] == "del" and req_del.split()[1] =="-l"):
-                    bd_student = delete(bd_student,req_del.split()[2])
+                    if( len(req_del.split()) == 3 ):    
+                        bd = delete(bd,req_del.split()[2])
+                    else:
+                        bd = delete(bd)
                 if (req_del == "look"):
-                    table_student(bd_student)
+                    table_student(bd)
                 if (req_del =="adds" or req_del == "change"):
                     valid = False
                     req = req_del
@@ -85,11 +92,11 @@ while(1):
                     print(">> look - просмотр содержимого списка")
                     print(">> exit - выход из режима")
                 if (req_change.split()[0] == "ch" and req_change.split()[1] =="-all"):
-                    bd_student = change(bd_student,"FIOGA", req_change.split()[2])
+                    bd = change(bd,"FIOGA", req_change.split()[2])
                 elif (req_change.split()[0] == "ch" and (req_change.split()[1].find("F") or req_change.split()[1].find("I") or req_change.split()[1].find("O") or req_change.split()[1].find("G") or req_change.split()[1].find("A"))):
-                    bd_student = change(bd_student,req_change.split()[1], req_change.split()[2])
+                    bd = change(bd,req_change.split()[1], req_change.split()[2])
                 if (req_change == "look"):
-                    table_student(bd_student)
+                    table_student(bd)
                 if (req_change =="del" or req_change == "adds"):
                     valid = False
                     req = req_change
@@ -98,14 +105,14 @@ while(1):
                     valid = True
                     break
     if (req == "look"):
-        table_student(bd_student)
+        table_student(bd,bd_id)
     if(req == "save"):
         while(1):
             true_save = input("Вы хотите сохранить изменения в базе?(y-yes, n-no): ")
             if(true_save == ""):
                 continue
             if true_save[0] in ["y","Y","д","Д"] :
-                save(bd_student)
+                save(bd,bd_id)
                 print("База сохранена")
                 break
             if true_save[0] in ["n","N","Н","н"] :
