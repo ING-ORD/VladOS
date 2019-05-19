@@ -128,7 +128,8 @@ def save(bd = [[]],id = 1):
     links[id] = jsonStr
 
     jsonFile = open(nameJsonFile,"w")
-    jsonFile.writelines(links)
+    jsonFile.writelines(links[0]+"\n"+links[1])
+    # jsonFile.writelines(links)
     # for link in jsonFile:
     #     if id == count:
     #         jsonFile.write(jsonStr)
@@ -154,3 +155,8 @@ def load(id = 1):
             count+=1
         jsonFile.close()
         return answer
+def rebase ():
+    return int(input("""Какую бызу использовать?(цифра):
+    1)Student
+    2)Teacher
+    : """))

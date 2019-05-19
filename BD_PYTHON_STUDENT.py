@@ -17,15 +17,12 @@ print(visionOS,"- все права защищены ©")
 print("-"*25)
 valid = True
 # print(bd_student + "1")
-bd_id = int(input("""Какую бызу использовать?:
-    1)Student
-    2)Teacher
-    : """))
+bd_id = rebase()
 bd = load(bd_id)
 
 while(1):
     if(valid):
-        req = input(visionOS+" : ")
+        req = input(visionOS+" : ").lower()
     if (req =="help"):
         print(">> adds - режим добавления студентов в список")
         print(">> del - режим удаления студентов из списка")
@@ -34,7 +31,7 @@ while(1):
         print(">> save - сохранение базы данных")
     if (req =="adds"):
         while(1):
-            req_adds = input(visionOS+" -> adder_student: ")
+            req_adds = input(visionOS+" -> adder_student: ").lower()
             if(req_adds != ""):
                 if (req_adds =="help"):
                     print(">>> add -l <позиция> - создание студента на заданной поззиции")
@@ -58,7 +55,7 @@ while(1):
                     break
     if(req == "del"):
         while(1):
-            req_del = input(visionOS+" -> delete: ")
+            req_del = input(visionOS+" -> delete: ").lower()
             if(req_del != ""):
                 if (req_del =="help"):
                     print(">>> del -l <позиция> - удаляет элемент с позиции")
@@ -82,7 +79,7 @@ while(1):
                     break
     if (req == "change"):
         while(1):
-            req_change = input(visionOS+" -> change: ")
+            req_change = input(visionOS+" -> change: ").lower()
             if(req_change != ""):
                 if (req_change =="help"):
                     print(">>> ch -all <объект> - перезаписывает элемент полностью")
@@ -106,16 +103,19 @@ while(1):
                     break
     if (req == "look"):
         table_student(bd,bd_id)
+    if (req == "rebase"):
+        bd_id = rebase()
+        bd = load(bd_id)
     if(req == "save"):
         while(1):
-            true_save = input("Вы хотите сохранить изменения в базе?(y-yes, n-no): ")
+            true_save = input("Вы хотите сохранить изменения в базе?(y-yes, n-no): ").lower()
             if(true_save == ""):
                 continue
-            if true_save[0] in ["y","Y","д","Д"] :
+            if true_save[0] in ["y","д"] :
                 save(bd,bd_id)
                 print("База сохранена")
                 break
-            if true_save[0] in ["n","N","Н","н"] :
+            if true_save[0] in ["n","н"] :
                 print("Отменяю")
                 break
 
