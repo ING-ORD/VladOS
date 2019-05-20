@@ -15,6 +15,37 @@ import os.path
 #             answer.append(add_question(bd_id))
 #             return answer
 
+# Вспомогательная функция опредиляющая совпадают ли в "таблице" с лева от столбца i в строках j и k занчения всех ячеек
+# Если проще то, есть ли с лева одинаковые ячейки во всех столбцах до i в строках j и k
+def rightEquality(bd,i,j,k):
+    for id in range(i):
+        if bd[j][id] != bd[k][id]:
+            return False
+    return True
+
+def sort_dict(bd,bd_id):
+    bdValues = list(bd["student"].values())
+    bdKeys = list(bd["student"].keys())
+    for i in range(len(bd["student"]["firstline"])):
+        for j in range(1,len(bdValues)-1):
+            for k in range(1,len(bdValues)-1):
+                if (i>0):
+                    if(bdValues[j][i]<bdValues[k][i] and j>k and bdValues[k][0] == bdValues[j][0] and rightEquality(bdValues,i,j,k)):
+                        bdValues[j],bdValues[k] = bdValues[k], bdValues[j]
+                        bdKeys[j],bdKeys[k] = bdKeys[k],bdKeys[j]
+                elif(i == 0):
+                    if(bdValues[j][i]<bdValues[k][i]and j>k):
+                        bdValues[j],bdValues[k] = bdValues[k], bdValues[j]
+                        bdKeys[j],bdKeys[k] = bdKeys[k],bdKeys[j]
+    newDict = {}
+    for id in range(len(bdValues)):
+        newDict.update([(bdKeys[id],bdValues[id])])
+        ## Доделать до возврата полной базы а не одной
+    return newDict
+
+
+
+
 def add(bd = None,bd_id = "student"):
     if (bd != None):
         answer = bd.copy()
@@ -70,9 +101,12 @@ def change(bd,what = "FIOGA",bd_id = "student" ,id = None):
     answer[id] = what_change(answer[id],what,bd_id)
     return answer
 
-def change_by_name(bd = None,bd_id = "student",what = "FIOGA",id):
+def change(bd = None,bd_id = "student",id,what = "FIOGA"):
     if (bd != None):
         answer = bd.copy()
+        answer = sort_dict(answer[bd_id])
+        # for i in range(1,len(answer)):
+        what_change(answer[ list(answer.keys())[id] ],what,bd_id ) 
         
 
 
