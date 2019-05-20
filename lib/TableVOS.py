@@ -70,10 +70,10 @@ def change(bd,what = "FIOGA",bd_id = "student" ,id = None):
     answer[id] = what_change(answer[id],what,bd_id)
     return answer
 
-def change_by_name(bd = None,bd_id = "student",name = None):
+def change_by_name(bd = None,bd_id = "student",what = "FIOGA",id):
     if (bd != None):
         answer = bd.copy()
-        pass
+        
 
 
 
