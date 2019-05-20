@@ -1,24 +1,32 @@
 import json
 import os.path
 
-def add (bd = None,bd_id = 1,id = None):
-    answer = []
-    if(bd != None):
-        if (id != None ):
-            for i in range(len(bd)):
-                if (i == int(id)):
-                    answer.append(add_question(bd_id))
-                answer.append(bd[i])
-            return answer
-        else:
-            answer = bd
-            answer.append(add_question(bd_id))
-            return answer
+# def add (bd = None,bd_id = 1,id = None):
+#     answer = []
+#     if(bd != None):
+#         if (id != None ):
+#             for i in range(len(bd)):
+#                 if (i == int(id)):
+#                     answer.append(add_question(bd_id))
+#                 answer.append(bd[i])
+#             return answer
+#         else:
+#             answer = bd
+#             answer.append(add_question(bd_id))
+#             return answer
 
-def add_question (id = 1):
+def add(bd = None,bd_id = "student"):
+    if (bd != None):
+        answer = bd.copy()
+        id = 1 if len(answer[ bd_id ])==1 else list(answer[ bd_id ].keys())[-1]+1
+        answer[ bd_id ].update([( id, add_question( bd_id ) )])
+        return answer
+
+
+def add_question (bd_id = "student"):
     answer_question = []
     
-    if(id == 1):
+    if(bd_id == "student"):
         answer_question.append(input("Введите фамилию студента: "))
         answer_question.append(input("Введите имя студента: "))
         answer_question.append(input("Введите отчество студента: "))
@@ -32,27 +40,46 @@ def add_question (id = 1):
         answer_question.append(input("Введите кол-во полных лет преподавателю: "))
     return answer_question
 
-def delete(bd = None,id = None):
-    answer = []
-    if(bd != None):
-        if (id == None ):
-            id = len(bd)-1
-        for i in range(len(bd)):
-            if (i != int(id)):
-                answer.append(bd[i])
-        return answer
+# def delete(bd = None,id = None):
+#     answer = []
+#     if(bd != None):
+#         if (id == None ):
+#             id = len(bd)-1
+#         for i in range(len(bd)):
+#             if (i != int(id)):
+#                 answer.append(bd[i])
+#         return answer
 
-def change(bd,what = "FIOGA",id = None):
+def delete_by_name (bd = None,bd_id = "student",name = None,quantity = 1):
+    count_del = 0
+    if (bd != None):
+        answer = bd.copy()
+        for key,ell in list(bd[bd_id].items()):
+            if ell[1].lower() == name.lower() and key != "firstline" and quantity > count_del:
+                answer["student"].pop(key,"lol")
+                count_del += 1
+        return answer
+        
+
+
+def change(bd,what = "FIOGA",bd_id = "student" ,id = None):
     answer = bd
     if (id == None ):
         id = len(bd)-1
     id = int(id)
-    answer[id] = what_change(answer[id],what)
+    answer[id] = what_change(answer[id],what,bd_id)
     return answer
+
+def change_by_name(bd = None,bd_id = "student",name = None):
+    if (bd != None):
+        answer = bd.copy()
+        pass
+
+
 
 def what_change(bd, what,bd_id):
     answer = bd
-    if(bd_id == 1):
+    if(bd_id == "student"):
         if "F" in what:
             answer[0] = input("Введите фамилию студента: ")
         if "I" in what:
@@ -63,7 +90,7 @@ def what_change(bd, what,bd_id):
             answer[3] = input("Введите группу студента(н-р:КП 18-11-2): ")
         if "A" in what:
             answer[4] = input("Введите кол-во полных лет студента: ")
-    else:
+    elif (bd_id == "teacher"):
         if "F" in what:
             answer[0] = input("Введите фамилию преподавателя: ")
         if "I" in what:
@@ -160,3 +187,16 @@ def rebase ():
     1)Student
     2)Teacher
     : """))
+
+dict_s = {
+    "student":{
+        "firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","ГРУППА","ЛЕТ"],
+        1:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+        2:["Марковский","Слава","Петрович","ССА 18-11-2","18"],
+        3:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+        4:["Марковский","Газинур","Петрович","ССА 18-11-2","18"]
+    },
+    "teacher":{"firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","СВОЯ ГРУППА","ЛЕТ"]}
+}
+# print(delete_by_name(dict_s,"student","Игнат",2))
+print(add(dict_s,"student"))
