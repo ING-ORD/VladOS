@@ -20,7 +20,6 @@ valid = True
 # print(bd_student + "1")
 bd_id = rebase()
 bd = load()
-print(bd)
 while(1):
     if(valid):
         req = input(bd_id+" : ").lower()
