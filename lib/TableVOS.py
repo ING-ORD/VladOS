@@ -1,112 +1,200 @@
 import json
 import os.path
 
-def add (bd = None,id = None):
-    answer = []
-    if(bd != None):
-        if (id != None ):
-            for i in range(len(bd)):
-                if (i == int(id)):
-                    answer.append(add_question())
-                answer.append(bd[i])
-            return answer
-        else:
-            answer = bd
-            answer.append(add_question())
-            return answer
+# Вспомогательная функция опредиляющая совпадают ли в "таблице" с лева от столбца i в строках j и k занчения всех ячеек
+# Если проще то, есть ли с лева одинаковые ячейки во всех столбцах до i в строках j и k
+def rightEquality(bd,i,j,k):
+    for id in range(i):
+        if bd[j][id] != bd[k][id]:
+            return False
+    return True
 
-def add_question ():
-    answer_question = []
-    answer_question.append(input("Введите фамилию студента: "))
-    answer_question.append(input("Введите имя студента: "))
-    answer_question.append(input("Введите отчество студента: "))
-    answer_question.append(input("Введите группу студента(н-р:КП 18-11-2): "))
-    answer_question.append(input("Введите кол-во полных лет студента: "))
-    return answer_question
-
-def delete(bd = None,id = None):
-    answer = []
-    if(bd != None):
-        if (id == None ):
-            id = len(bd)
-        for i in range(len(bd)):
-            if (i != int(id)):
-                answer.append(bd[i])
-        return answer
-
-def change(bd,what = "FIOGA",id = None):
-    answer = bd
-    if (id == None ):
-        id = len(bd)-1
-    id = int(id)
-    answer[id] = what_change(answer[id],what)
+def sort_dict(bd):
+    answer = {}
+    for key in bd:
+        answer_sub = {}
+        bdValues = list(bd[key].values())
+        bdKeys = list(bd[key].keys())
+        #Сортировка значений , ключи остаются прежними
+        for i in range(len(bd[key]["firstline"])):
+            for j in range(1,len(bdValues)-1):
+                for k in range(1,len(bdValues)-1):
+                    if (i>0):
+                        if(bdValues[j][i]<bdValues[k][i] and j>k and rightEquality(bdValues,i,j,k)):
+                            bdValues[j],bdValues[k] = bdValues[k], bdValues[j]
+                    elif(i == 0):
+                        if(bdValues[j][i]<bdValues[k][i]and j>k):
+                            bdValues[j],bdValues[k] = bdValues[k], bdValues[j]
+        # answer.setdefault(key)
+        for id in range(len(bdValues)):
+            answer_sub.update([(bdKeys[id],bdValues[id])])
+        answer.setdefault(key,answer_sub)
+    # newDict = {}
+    # # answer = {}
+    # # создание отсортировонного словаря для одной базы
+    # for id in range(len(bdValues)):
+    #     newDict.update([(bdKeys[id],bdValues[id])])
+    # for id in list(bd.keys()):
+    #     if id == bd_id:
+    #         answer.update([(bd_id,newDict)])
+    #     else:
+    #         answer.update([(id,bd[id])])
     return answer
 
-def what_change(bd, what):
-    answer = bd
-    if "F" in what:
-        answer[0] = input("Введите фамилию студента: ")
-    if "I" in what:
-        answer[1] = input("Введите имя студента: ")
-    if "O" in what:
-        answer[2] = input("Введите отчество студента: ")
-    if "G" in what:
-        answer[3] = input("Введите группу студента(н-р:КП 18-11-2): ")
-    if "A" in what:
-        answer[4] = input("Введите кол-во полных лет студента: ")
+def add(bd = None,bd_id = "student"):
+    if (bd != None):
+        answer = bd.copy()
+        id = 1 if len(answer[ bd_id ])==1 else int(list(answer[ bd_id ].keys())[-1])+1
+        answer[ bd_id ].update([( int(id), add_question( bd[bd_id]["firstline"] ) )])
+        return answer
+
+def add_question (bd):
+    answer = []
+    for id in range(len(bd)):
+        answer.append(input("Введите значение поля \""+str(bd[id]).lower()+"\": " ))
+    return answer
+
+def delete_by_name (bd = None,bd_id = "student",name = None,quantity = -1):
+    if (bd != None):
+        if quantity == -1 or quantity>=len(bd[bd_id]):
+            quantity = len(bd[bd_id])-1
+        count_del = 0
+        answer = bd.copy()
+        for key,ell in list(bd[bd_id].items()):
+            if ell[1].lower() == name.lower() and key != "firstline" and quantity > count_del:
+                answer["student"].pop(key,"lol")
+                count_del += 1
+        return answer
+
+def delete_by_id(bd,bd_id,id=-1):
+    if (bd != None):
+        if id == -1 or id>=len(bd[bd_id]):
+            id = len(bd[bd_id])-1
+            if len(bd[bd_id])==1:
+                return bd
+        answer = bd.copy()
+        del(answer[bd_id][list(bd[bd_id].keys())[id]])
+        print(">Удалил<")
+        return answer
+
+def change(bd = None,bd_id = "student",id = -1,what = "fioga"):
+    if (bd != None):
+        id = int(id)
+        answer = bd.copy()
+        # answer = sort_dict(answer,bd_id)
+        if id == -1 or id>=len(bd[bd_id]):
+            id = len(bd[bd_id])-1
+            if len(bd[bd_id])==1:
+                return bd
+        answer[bd_id][list(answer[bd_id].keys())[id]] = what_change(bd[bd_id][ list(bd[bd_id].keys())[id] ],bd[bd_id]["firstline"],bd_id,what )
+        return answer
+
+def what_change(bd, bd_first, bd_id, what):
+    answer = bd 
+    what_bd = {0:"f",1:"i",2:"o",3:"g",4:"a"}
+    for key_bd, val_bd in list(what_bd.items()):
+        if val_bd in what:
+            answer[key_bd] = input("Введите значение поля \""+str(bd_first[key_bd]).lower()+"\": ")
+            if answer[key_bd] =="":
+                answer[key_bd] = bd[key_bd]
     return answer 
 
-def table_student(bd):
-    if (len(bd)==0):
+def table_bd(bd,bd_id = "student"):
+    if (len(bd[bd_id])==1):
         print(">>> База пустая <<<")
         return
-    max_len = [0,7,3,8,6,3]
+    # bdsort_dict(bd,bd_id)
+    max_len_first = [0]
 
-    for ell in bd:
-        max_len[0] = int(len(str(len(bd))))
-        for i in range(1,6):   
-            max_len[i] = len(ell[i-1]) if max_len[i]<len(ell[i-1]) else max_len[i]
+    max_len_first[0] = int(len(str(len(bd))))
+    for ell in bd[bd_id]["firstline"]:
+        max_len_first.append(len(ell))
 
-    count = 1 
-    print("№"+" "*(max_len[0]) + "| ФАМИЛИЯ"+" "*(max_len[1]-6)+"| ИМЯ"+" "*(max_len[2]-2)+"| ОТЧЕСТВО"+" "*(max_len[3]-7)+"| ГРУППА"+" "*(max_len[4]-5)+"| ЛЕТ"+" "*(max_len[5]-2)+"|")
-    for ell in bd:
+    max_len = max_len_first.copy()
 
-        for i in range(6):
-            if (i==0):
-                if (max_len[i]%2==0 and len(ell[i])%2==0):  
-                    print(count, " " * ( max_len[i] - len( str(count) ) ), end="| " )
-                    print(ell[i], " " * ( max_len[i+1] - len( ell[i] ) ), end="| " )
-                else:
-                    print(count, " " * ( max_len[i] - len( ell[i] ) ), end="| " )
-                    print(ell[i], " " * ( max_len[i+1] - len( ell[i] ) ), end="| " )
-            if (i!=0 and i !=5):
-                if (max_len[i]%2==0 and len(ell[i])%2==0):  
-                    print(ell[i], " " * ( max_len[i+1] - len( ell[i] ) ), end="| " )
-                elif (max_len[i]%2!=0 and len(ell[i])%2==0):
-                    print(ell[i], " " * ( max_len[i+1] - len(ell[i] ) ), end="| " )
-                else:
-                    print(ell[i], " " * ( max_len[i+1] - len( ell[i] ) ), end="| " ) 
-            if (i==5):
-                print()
+    for vall in list(bd[bd_id].values() ):
+        for id in range(1,len(max_len_first)):
+            max_len[id] = len(vall[id-1]) if max_len[id]<len(vall[id-1]) else max_len[id]
+
+    for id in range(len(bd[bd_id]["firstline"])+1):
+        if id == 0:
+            print("№"+" "*(max_len[id]), end = "| ")
+        else:
+            print(bd[bd_id]["firstline"][id-1]+" "*(max_len[id]-(max_len_first[id]-1)), end ="| ")
+        if id == len(bd[bd_id]["firstline"]):
+            print()
+            break
+
+    count = 0
+    for vall in list(bd[bd_id].values() ):
+        if count != 0:
+            for id in range(len(vall)):
+                if (id == 0):
+                    print(count, " " * ( max_len[id] - len( str(count) ) ), end="| " )
+                    print(vall[id], " " * ( max_len[id+1] - len( vall[id] ) ), end="| " )
+                if(id != 0 and id != len(vall)):
+                    print(vall[id], " " * ( max_len[id+1] - len( vall[id] ) ), end="| " )
+            print()
         count += 1
 
-def save(bd = [[]]):
+def save(bd):
+    bd_sort = sort_dict(bd).copy()
     nameJsonFile = "save.json"
-    jsonStr = json.dumps(bd, ensure_ascii=False)
+    jsonStr = json.dumps(bd_sort, ensure_ascii=False)
     jsonFile = open(nameJsonFile,"w")
-    jsonFile.write(jsonStr)
+    jsonFile.writelines(jsonStr)
     jsonFile.close()
 
 def load():
     nameJsonFile = "save.json"
     if(not os.path.exists(nameJsonFile)):
         zeroFile = open(nameJsonFile,"w")
-        zeroFile.write("[]")
+        zeroFile.write('{ "student":{ "firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","ГРУППА","ЛЕТ"] },"teacher":{"firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","СВОЯ ГРУППА","ЛЕТ"] } }')
         zeroFile.close()
-        return []
-    else:
-        jsonFile = open(nameJsonFile,"r")
-        for link in jsonFile:
-            answer = json.loads(link)
-        jsonFile.close()
-        return answer
+    jsonFile = open(nameJsonFile,"r")
+    jsonStr = jsonFile.read()
+    answer = json.loads(jsonStr)
+    jsonFile.close()
+    return answer
+
+def rebase ():
+    id = input("""Какую бызу использовать?(цифра):
+    1)Student
+    2)Teacher
+    : """).lower()
+    if (id in ["1","student"]):
+        return "student"
+    if (id in ["2","teacher"]):
+        return "teacher"
+
+
+# dict_s = {
+#     "student":{
+#         "firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","ГРУППА","ЛЕТ"],
+#         1:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+#         2:["Марковский","Слава","Петрович","ССА 18-11-2","18"],
+#         3:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+#         4:["Марковский","Газинур","Петрович","ССА 18-11-2","18"]
+#     },
+#     "teacher":{"firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","СВОЯ ГРУППА","ЛЕТ"]}
+# }
+# print(delete_by_name(dict_s,"student","Игнат",2))
+# print(add(dict_s,"student"))
+
+# print("add(Студент): ",add(dict_s,"student"))
+# print("-"*30)
+# print("sort_dict(): ",sort_dict(dict_s,"student"))
+# print("-"*30)
+# print("delete_by_id(1): ",delete_by_id(dict_s,"teacher",1))
+# print("-"*30)
+# print("delete_by_name(Игнат): ",delete_by_name(dict_s,"student","Игнат",2))
+# print("-"*30)
+# print("change(студент,2,FIOGA): ",change(dict_s,"student",2,"FIOGA"))
+# print(dict_s)
+# table_bd(dict_s)
+# print(load())
+# save(dict_s)
+# dict_s = load()
+# table_bd(dict_s)
+# bd_id = rebase()
+# table_bd(dict_s,bd_id)
