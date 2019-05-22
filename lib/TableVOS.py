@@ -44,8 +44,8 @@ def sort_dict(bd):
 def add(bd = None,bd_id = "student"):
     if (bd != None):
         answer = bd.copy()
-        id = 1 if len(answer[ bd_id ])==1 else list(answer[ bd_id ].keys())[-1]+1
-        answer[ bd_id ].update([( id, add_question( bd[bd_id]["firstline"] ) )])
+        id = 1 if len(answer[ bd_id ])==1 else int(list(answer[ bd_id ].keys())[-1])+1
+        answer[ bd_id ].update([( int(id), add_question( bd[bd_id]["firstline"] ) )])
         return answer
 
 def add_question (bd):
@@ -73,14 +73,16 @@ def delete_by_id(bd,bd_id,id=-1):
             if len(bd[bd_id])==1:
                 return bd
         answer = bd.copy()
-        del(answer[bd_id][id])
+        del(answer[bd_id][list(bd[bd_id].keys())[id]])
+        print(">Удалил<")
         return answer
 
-def change(bd = None,bd_id = "student",id = -1,what = "FIOGA"):
+def change(bd = None,bd_id = "student",id = -1,what = "fioga"):
     if (bd != None):
+        id = int(id)
         answer = bd.copy()
         # answer = sort_dict(answer,bd_id)
-        if id == -1 and id>=len(bd[bd_id]):
+        if id == -1 or id>=len(bd[bd_id]):
             id = len(bd[bd_id])-1
             if len(bd[bd_id])==1:
                 return bd
@@ -89,7 +91,7 @@ def change(bd = None,bd_id = "student",id = -1,what = "FIOGA"):
 
 def what_change(bd, bd_first, bd_id, what):
     answer = bd 
-    what_bd = {0:"F",1:"I",2:"O",3:"G",4:"A"}
+    what_bd = {0:"f",1:"i",2:"o",3:"g",4:"a"}
     for key_bd, val_bd in list(what_bd.items()):
         if val_bd in what:
             answer[key_bd] = input("Введите значение поля \""+str(bd_first[key_bd]).lower()+"\": ")
@@ -111,7 +113,7 @@ def table_bd(bd,bd_id = "student"):
     max_len = max_len_first.copy()
 
     for vall in list(bd[bd_id].values() ):
-        for id in range(1,len(vall)):
+        for id in range(1,len(max_len_first)):
             max_len[id] = len(vall[id-1]) if max_len[id]<len(vall[id-1]) else max_len[id]
 
     for id in range(len(bd[bd_id]["firstline"])+1):
@@ -166,16 +168,16 @@ def rebase ():
         return "teacher"
 
 
-dict_s = {
-    "student":{
-        "firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","ГРУППА","ЛЕТ"],
-        1:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
-        2:["Марковский","Слава","Петрович","ССА 18-11-2","18"],
-        3:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
-        4:["Марковский","Газинур","Петрович","ССА 18-11-2","18"]
-    },
-    "teacher":{"firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","СВОЯ ГРУППА","ЛЕТ"]}
-}
+# dict_s = {
+#     "student":{
+#         "firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","ГРУППА","ЛЕТ"],
+#         1:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+#         2:["Марковский","Слава","Петрович","ССА 18-11-2","18"],
+#         3:["Марковский","Игнат","Петрович","ССА 18-11-2","18"],
+#         4:["Марковский","Газинур","Петрович","ССА 18-11-2","18"]
+#     },
+#     "teacher":{"firstline":["ФАМИЛИЯ","ИМЯ","ОТЧЕСТВО","СВОЯ ГРУППА","ЛЕТ"]}
+# }
 # print(delete_by_name(dict_s,"student","Игнат",2))
 # print(add(dict_s,"student"))
 
@@ -190,9 +192,9 @@ dict_s = {
 # print("change(студент,2,FIOGA): ",change(dict_s,"student",2,"FIOGA"))
 # print(dict_s)
 # table_bd(dict_s)
-print(load())
-save(dict_s)
-dict_s = load()
-table_bd(dict_s)
-bd_id = rebase()
-table_bd(dict_s,bd_id)
+# print(load())
+# save(dict_s)
+# dict_s = load()
+# table_bd(dict_s)
+# bd_id = rebase()
+# table_bd(dict_s,bd_id)
