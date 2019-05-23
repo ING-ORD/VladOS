@@ -25,20 +25,9 @@ def sort_dict(bd):
                     elif(i == 0):
                         if(bdValues[j][i]<bdValues[k][i]and j>k):
                             bdValues[j],bdValues[k] = bdValues[k], bdValues[j]
-        # answer.setdefault(key)
         for id in range(len(bdValues)):
             answer_sub.update([(bdKeys[id],bdValues[id])])
         answer.setdefault(key,answer_sub)
-    # newDict = {}
-    # # answer = {}
-    # # создание отсортировонного словаря для одной базы
-    # for id in range(len(bdValues)):
-    #     newDict.update([(bdKeys[id],bdValues[id])])
-    # for id in list(bd.keys()):
-    #     if id == bd_id:
-    #         answer.update([(bd_id,newDict)])
-    #     else:
-    #         answer.update([(id,bd[id])])
     return answer
 
 def add(bd = None,bd_id = "student"):
