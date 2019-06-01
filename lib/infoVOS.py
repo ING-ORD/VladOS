@@ -2,7 +2,7 @@ import pickle
 
 def version():
     print("VladOS - все права защищены ©")
-    print("Версия 0.0.3af")
+    print("Версия 0.0.4af")
 
 def help(helpStr):
     helpBD = {

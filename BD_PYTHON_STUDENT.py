@@ -14,19 +14,19 @@ while(1):
     #help
     if (len(req.split())== 2 and req.split()[0] == "help"):
         help(req.split()[1])
-    if (req == "help"):
+    elif (req == "help"):
         help(req)
     #add
-    if (len(req.split())==2 and req.split()[0] == "add" and req.split()[1] =="-l"):
+    elif (len(req.split())==2 and req.split()[0] == "add" and req.split()[1] =="-l"):
             bd = add(bd,bd_id)
     #del
-    if (len(req.split())>=2 and req.split()[0] == "del" and req.split()[1] =="-l"):
+    elif (len(req.split())>=2 and req.split()[0] == "del" and req.split()[1] =="-l"):
         if( len(req.split()) == 3 and req.split()[2].isdigit()):    
             bd = delete_by_id(bd,bd_id,int(req.split()[2]))
         else:
             bd = delete_by_id(bd,bd_id)
     #ch
-    if (len(req.split())==3 and req.split()[0] == "ch" and req.split()[1] =="-all"):
+    elif (len(req.split())==3 and req.split()[0] == "ch" and req.split()[1] =="-all"):
         if( req.split()[2].isdigit() ):
             bd = change( bd, bd_id, req.split()[2] )
         else:
@@ -37,16 +37,16 @@ while(1):
         else:
             print(req.split()[2]+" - не является коректным id, необходимо ввеси число")
     #look
-    if (req == "look"):
+    elif (req == "look"):
         table_bd(bd,bd_id)
     #version
-    if (req == "version"):
+    elif (req == "version"):
         version()
     #rebase
-    if (req == "rebase"):
+    elif (req == "rebase"):
         bd_id = rebase()
     #save
-    if (req == "save"):
+    elif (req == "save"):
         while(1):
             true_save = input("Вы хотите сохранить изменения в базе?(y-yes, n-no): ").lower()
             if(true_save == ""):
@@ -59,7 +59,7 @@ while(1):
                 print("...")
                 break
     #shutdown
-    if (req == "shutdown"):
+    elif (req == "shutdown"):
         while(1):
             shutdown = input("Сохранить изменения пред выходом?(y-yes, n-no, c-cancel): ")
             if (shutdown == ""):
@@ -75,6 +75,8 @@ while(1):
                 sys.exit()
             if shutdown in ["c","о"]:
                 break
+    else:
+        print("Не коректный ввод команды...")
 
 
 
