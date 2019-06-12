@@ -1,8 +1,27 @@
 import pickle
+import os
+
+History = []
 
 def version():
     print("VladOS - все права защищены ©")
     print("Версия 0.0.4af")
+
+def checkhistory(comand = None):
+    if(comand != None):
+        History.append(comand)
+    elif(len(History)!=0):
+        print("History("+str(len(History))+" commands):")
+        for el in History:
+            print("\t"+el)
+    else:
+        print("История пуста")
+
+def clear():
+    os.system("cls")
+    print("-"*25)
+    print("VladOS- все права защищены ©")
+    print("-"*25)
 
 def help(helpStr):
     helpBD = {
@@ -12,6 +31,8 @@ def help(helpStr):
         "look":"look:\t\tВыводит содержимое базы в виде таблицы",
         "rebase":"rebase:\t\tОсуществляет переход на другую базу",
         "save":"save:\t\tСохраняет содержимое всех баз данных в которые были внесены изменения",
+        "clear":"clear\t\tОчищает экран",
+        "history":"history\t\tПоказывает историю команд.",
         "version":"version:\tИнформация о релизе",
         "shutdown":"shutdown:\tЗавершение процесса"
     }

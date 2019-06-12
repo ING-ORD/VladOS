@@ -75,9 +75,13 @@ while(1):
                 sys.exit()
             if shutdown in ["c","о"]:
                 break
+    elif (req == "history"):
+        checkhistory()
+    elif (req == "clear"):
+        clear()
     else:
         print("Не коректный ввод команды...")
-
+    checkhistory(req)
 
 
 
